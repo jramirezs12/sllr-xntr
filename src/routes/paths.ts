@@ -1,7 +1,5 @@
 // ----------------------------------------------------------------------
 
-import { Children } from 'react';
-
 const ROOTS = {
   AUTH: '/auth',
   HOME: '/home',
@@ -49,9 +47,23 @@ export const paths = {
     root: ROOTS.PRODUCT,
     load: `${ROOTS.PRODUCT}/load`,
     uploadList: `${ROOTS.PRODUCT}/load/list`,
+    details: (id: number) => `${ROOTS.PRODUCT}/${id}`,
   },
   return: {
     root: '/return',
     details: (id: number) => `/return/${id}`,
   },
+  feedback: {
+    root: '/feedback',
+  },
+  account: {
+    root: '/account',
+    subaccount: {
+      root: '/account/subaccount',
+      details: (id: number) => `/account/subaccount/${id}`,
+      edit: (id: number) => `/account/subaccount/${id}/edit`,
+      new: '/account/subaccount/new',
+    },
+  },
+  settings: '/settings'
 };
