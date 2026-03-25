@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-import { OrderTableToolbar } from '../order-table-toolbar';
+import { OrderTableToolbar } from './order-table-toolbar';
 
 jest.mock('src/components/iconify', () => ({
   Iconify: ({ icon }: any) => <span data-testid={`icon-${icon}`} />,

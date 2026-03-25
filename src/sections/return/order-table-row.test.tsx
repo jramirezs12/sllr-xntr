@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-import { OrderTableRow } from '../order-table-row';
+import { OrderTableRow } from './order-table-row';
 
 jest.mock('src/routes/components', () => ({
   RouterLink: ({ href, children }: any) => <a href={href}>{children}</a>,

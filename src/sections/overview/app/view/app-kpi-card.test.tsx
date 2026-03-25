@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-import { AppKpiCard } from '../app-kpi-card';
+import { AppKpiCard } from './app-kpi-card';
 
 jest.mock('src/components/chart', () => ({
   Chart: ({ type }: any) => <div data-testid={`chart-${type}`} />,
