@@ -30,7 +30,7 @@ describe('CustomTable', () => {
 
   it('renders pagination', () => {
     renderWithTheme(<CustomTable />);
-    expect(screen.getByRole('navigation') || screen.getAllByRole('button').length).toBeTruthy();
+    expect(screen.getAllByRole('button').length).toBeGreaterThan(0);
   });
 
   it('renders table head with sort labels', () => {

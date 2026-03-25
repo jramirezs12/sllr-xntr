@@ -47,7 +47,7 @@ describe('CsvErrorsAlert', () => {
     renderWithTheme(
       <CsvErrorsAlert csvFile={createFile()} csvErrors={['Error row 1']} />
     );
-    const chip = screen.getByText(/error/i);
+    const chip = screen.getByRole('button', { name: /error/i });
     fireEvent.click(chip);
     expect(screen.getByText('Errores detectados en el archivo CSV')).toBeInTheDocument();
   });
@@ -56,7 +56,7 @@ describe('CsvErrorsAlert', () => {
     renderWithTheme(
       <CsvErrorsAlert csvFile={createFile()} csvErrors={['Error A', 'Error B']} />
     );
-    const chip = screen.getByText(/error/i);
+    const chip = screen.getByRole('button', { name: /error/i });
     fireEvent.click(chip);
     expect(screen.getByText('Error A')).toBeInTheDocument();
     expect(screen.getByText('Error B')).toBeInTheDocument();
@@ -66,7 +66,7 @@ describe('CsvErrorsAlert', () => {
     renderWithTheme(
       <CsvErrorsAlert csvFile={createFile()} csvErrors={['Error row 1']} />
     );
-    const chip = screen.getByText(/error/i);
+    const chip = screen.getByRole('button', { name: /error/i });
     fireEvent.click(chip);
     expect(screen.getByText('Errores detectados en el archivo CSV')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /cancel/i }));

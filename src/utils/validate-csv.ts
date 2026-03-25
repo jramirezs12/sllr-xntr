@@ -17,6 +17,7 @@ export function validateCsvFile(file: File): Promise<string[]> {
       resolve(['El archivo CSV es demasiado grande. El tamaño máximo permitido es de 1 MB.']);
       return;
     }
+    resolve([]);
   });
 }
 
