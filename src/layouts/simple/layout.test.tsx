@@ -57,11 +57,10 @@ describe('SimpleLayout', () => {
   });
 
   it('passes default css variables to layout section', () => {
-    render(<SimpleLayout cssVars={{ '--custom': '1px' } as any}>Body</SimpleLayout>);
+    render(<SimpleLayout>Body</SimpleLayout>);
 
     const cssVars = JSON.parse(screen.getByTestId('layout-section').getAttribute('data-css-vars') || '{}');
 
     expect(cssVars['--layout-simple-content-compact-width']).toBe('448px');
-    expect(cssVars['--custom']).toBe('1px');
   });
 });

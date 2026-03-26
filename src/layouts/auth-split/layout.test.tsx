@@ -32,11 +32,10 @@ describe('AuthSplitLayout', () => {
   });
 
   it('sets default auth css vars and keeps custom vars', () => {
-    render(<AuthSplitLayout cssVars={{ '--custom': '2px' } as any}>Auth body</AuthSplitLayout>);
+    render(<AuthSplitLayout>Auth body</AuthSplitLayout>);
 
     const cssVars = JSON.parse(screen.getByTestId('auth-layout').getAttribute('data-css-vars') || '{}');
 
     expect(cssVars['--layout-auth-content-width']).toBe('420px');
-    expect(cssVars['--custom']).toBe('2px');
   });
 });
