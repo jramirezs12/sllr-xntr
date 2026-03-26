@@ -6,13 +6,13 @@ jest.mock('minimal-shared/utils', () => ({
 }));
 
 import {
+  FILE_ICONS,
   getFileName,
-  getFileExtension,
-  detectFileFormat,
   getFileIcon,
   getFileMeta,
   FILE_FORMATS,
-  FILE_ICONS,
+  getFileExtension,
+  detectFileFormat,
 } from './utils';
 
 describe('getFileName', () => {

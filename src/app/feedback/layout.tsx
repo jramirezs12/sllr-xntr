@@ -1,7 +1,7 @@
 import { CONFIG } from 'src/global-config';
+import { HomeLayout } from 'src/layouts/home/layout';
 
 import { AuthGuard } from 'src/auth/guard';
-import { HomeLayout } from 'src/layouts/home/layout';
 
 // ----------------------------------------------------------------------
 

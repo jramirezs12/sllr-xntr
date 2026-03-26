@@ -1,7 +1,8 @@
-import { render, screen } from '@testing-library/react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { render } from '@testing-library/react';
 
-import { SellerCenterSettings, SellerCenterSettingsSchema } from './seller-center-settings';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+import { SellerCenterSettingsSchema } from './seller-center-settings';
 
 jest.mock('src/layouts/home', () => ({
   HomeContent: ({ children }: any) => <div data-testid="home-content">{children}</div>,

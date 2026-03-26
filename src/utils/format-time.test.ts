@@ -1,14 +1,14 @@
 import {
+  fAdd,
+  fSub,
   today,
   fDate,
   fTime,
-  fDateTime,
-  fTimestamp,
   fToNow,
   fIsSame,
+  fDateTime,
+  fTimestamp,
   fDateRangeShortLabel,
-  fAdd,
-  fSub,
 } from './format-time';
 
 describe('format-time utils', () => {

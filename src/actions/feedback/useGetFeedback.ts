@@ -1,6 +1,7 @@
 'use client';
 
 import type { FeedbackAdapterInterface } from 'src/interfaces/feedback/feedback-adapter';
+import type { FeedbackRequest, ReviewListResponse } from 'src/interfaces/feedback/feedback-list';
 
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -8,7 +9,6 @@ import { useQuery } from '@tanstack/react-query';
 import { GraphQLService } from 'src/lib/graphql-client';
 
 import { GET_REVIEWS_QUERY } from './graphql/queries/get-feedback';
-import { FeedbackRequest, ReviewListResponse } from 'src/interfaces/feedback/feedback-list';
 import { feedbackListAdapter } from './adapters/feedback-list-adapter';
 
 export function useGetFeedback(request?: FeedbackRequest) {

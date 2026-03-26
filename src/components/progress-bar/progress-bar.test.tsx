@@ -11,8 +11,8 @@ jest.mock('minimal-shared/utils', () => ({
 }));
 
 import React from 'react';
-import { render } from '@testing-library/react';
 import NProgress from 'nprogress';
+import { render } from '@testing-library/react';
 
 import { ProgressBar } from './progress-bar';
 

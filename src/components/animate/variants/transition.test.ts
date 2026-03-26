@@ -1,4 +1,4 @@
-import { transitionEnter, transitionExit } from './transition';
+import { transitionExit, transitionEnter } from './transition';
 
 describe('transitionEnter', () => {
   it('returns default transition values', () => {

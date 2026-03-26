@@ -14,6 +14,7 @@ jest.mock('./use-file-preview', () => ({
 
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { FileThumbnail } from './file-thumbnail';

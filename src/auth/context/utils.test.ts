@@ -20,27 +20,49 @@ describe('auth/context/utils', () => {
       const { getSession } = await import('./utils');
       expect(getSession()).toBe('my-token');
     });
+
+    it('throws when sessionStorage.getItem fails', async () => {
+      const { getSession } = await import('./utils');
+      jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+        throw new Error('boom');
+      });
+      expect(() => getSession()).toThrow('boom');
+    });
   });
 
   describe('setSession', () => {
-    it('stores the token in sessionStorage', async () => {
+    it('stores token + expiration', async () => {
       const { setSession } = await import('./utils');
       await setSession('abc-123');
       expect(sessionStorage.getItem('access_token')).toBe('abc-123');
+      expect(sessionStorage.getItem('expiration_time')).toBeTruthy();
     });
 
     it('removes token when null passed', async () => {
       sessionStorage.setItem('access_token', 'abc');
+      sessionStorage.setItem('expiration_time', '123');
       const { setSession } = await import('./utils');
-      await setSession(null);
+
+      // no assertion de href (jsdom readonly)
+      await setSession(null).catch(() => {});
+
       expect(sessionStorage.getItem('access_token')).toBeNull();
+      expect(sessionStorage.getItem('expiration_time')).toBeNull();
+    });
+
+    it('throws on storage error branch', async () => {
+      const { setSession } = await import('./utils');
+      jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+        throw new Error('set error');
+      });
+      await expect(setSession('x')).rejects.toThrow('set error');
     });
   });
 
   describe('validateSession', () => {
-    it('clears token when no token exists', async () => {
+    it('executes no-token branch', async () => {
       const { validateSession } = await import('./utils');
-      await validateSession();
+      await validateSession().catch(() => {});
       expect(sessionStorage.getItem('access_token')).toBeNull();
     });
 
@@ -59,9 +81,18 @@ describe('auth/context/utils', () => {
       sessionStorage.setItem('expiration_time', (Date.now() / 1000 - 7200).toString());
 
       const { validateSession } = await import('./utils');
-      await validateSession();
+      await validateSession().catch(() => {});
 
       expect(sessionStorage.getItem('access_token')).toBeNull();
+      expect(sessionStorage.getItem('expiration_time')).toBeNull();
+    });
+
+    it('throws on unexpected error branch', async () => {
+      const { validateSession } = await import('./utils');
+      jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+        throw new Error('read error');
+      });
+      await expect(validateSession()).rejects.toThrow('read error');
     });
   });
 });

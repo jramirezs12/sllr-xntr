@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { FiltersBlock } from './filters-block';

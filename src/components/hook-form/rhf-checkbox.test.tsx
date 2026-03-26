@@ -27,7 +27,7 @@ describe('RHFCheckbox', () => {
   });
 
   it('renders checked when defaultValue is true', () => {
-    render(<Wrapper defaultValue={true} />);
+    render(<Wrapper defaultValue />);
     const checkbox = screen.getByRole('checkbox') as HTMLInputElement;
     expect(checkbox.checked).toBe(true);
   });

@@ -1,6 +1,6 @@
 import React from 'react';
-import { renderWithTheme } from './_test.utils';
 
+import { renderWithTheme } from './_test.utils';
 import CheckoutIllustration from './check-out-illustration';
 
 describe('CheckoutIllustration', () => {

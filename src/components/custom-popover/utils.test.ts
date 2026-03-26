@@ -1,4 +1,4 @@
-import { getPopoverOrigin, getArrowOffset } from './utils';
+import { getArrowOffset, getPopoverOrigin } from './utils';
 
 describe('getPopoverOrigin', () => {
   it('returns correct origins for top-left', () => {

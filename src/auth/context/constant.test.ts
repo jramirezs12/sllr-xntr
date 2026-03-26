@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN_STORAGE_KEY, EXPIRATION_TIME } from './constant';
+import { EXPIRATION_TIME, ACCESS_TOKEN_STORAGE_KEY } from './constant';
 
 describe('auth constants', () => {
   it('ACCESS_TOKEN_STORAGE_KEY is a non-empty string', () => {

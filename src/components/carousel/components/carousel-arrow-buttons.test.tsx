@@ -8,6 +8,7 @@ jest.mock('src/theme/create-classes', () => ({
 
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { ArrowButton } from './arrow-button';

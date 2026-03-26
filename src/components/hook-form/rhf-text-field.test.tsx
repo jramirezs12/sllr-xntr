@@ -5,8 +5,8 @@ jest.mock('minimal-shared/utils', () => ({
 }));
 
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
 import { useForm, FormProvider } from 'react-hook-form';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 import { RHFTextField } from './rhf-text-field';
 

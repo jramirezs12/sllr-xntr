@@ -1,6 +1,6 @@
 import React from 'react';
-import { renderWithTheme } from './_test.utils';
 
+import { renderWithTheme } from './_test.utils';
 import BookingIllustration from './booking-illustration';
 
 describe('BookingIllustration', () => {

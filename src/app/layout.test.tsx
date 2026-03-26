@@ -1,11 +1,12 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 
-import RootLayout, { viewport, metadata } from './layout';
-
 import { CONFIG } from 'src/global-config';
-import { detectSettings } from 'src/components/settings/server';
+
 import { defaultSettings } from 'src/components/settings';
+import { detectSettings } from 'src/components/settings/server';
+
+import RootLayout, { viewport, metadata } from './layout';
 
 // ---- Mocks ----
 jest.mock('src/global.css', () => ({}));
@@ -113,7 +114,7 @@ describe('src/app/layout.tsx', () => {
     detectSettingsMock.mockResolvedValue({ direction: 'rtl' });
 
     const ui = await RootLayout({ children: <div>child-content</div> });
-    const { container } = render(ui);
+    render(ui);
 
     expect(detectSettingsMock).toHaveBeenCalledTimes(1);
 
@@ -139,7 +140,7 @@ describe('src/app/layout.tsx', () => {
     CONFIG.isStaticExport = true;
 
     const ui = await RootLayout({ children: <div>static-child</div> });
-    const { container } = render(ui);
+    render(ui);
 
     expect(detectSettingsMock).not.toHaveBeenCalled();
     expect(screen.getByTestId('settings-provider')).toHaveAttribute(

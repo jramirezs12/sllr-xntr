@@ -3,7 +3,7 @@ jest.mock('minimal-shared/utils', () => ({
 }));
 
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 
 import { SvgColor } from './svg-color';
 

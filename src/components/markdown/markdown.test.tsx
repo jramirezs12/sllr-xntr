@@ -42,7 +42,7 @@ describe('Markdown', () => {
   });
 
   it('renders without crashing when empty', () => {
-    const { container } = render(<Markdown>{''}</Markdown>);
+    const { container } = render(<Markdown />);
     expect(container).toBeInTheDocument();
   });
 });

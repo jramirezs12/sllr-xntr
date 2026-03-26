@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 
-import { RETURN_STATUS_VALUES, useReturnStatus } from './status';
+import { useReturnStatus, RETURN_STATUS_VALUES } from './status';
 
 jest.mock('src/locales/langs/i18n', () => ({
   useTranslate: () => ({

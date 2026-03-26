@@ -2,9 +2,8 @@ import type { AuthContextValue } from '../types';
 
 import { renderHook } from '@testing-library/react';
 
-import { AuthContext } from '../context/auth-context';
-
 import { useAuthContext } from './use-auth-context';
+import { AuthContext } from '../context/auth-context';
 
 describe('useAuthContext', () => {
   it('returns context value when used inside AuthContext provider', () => {

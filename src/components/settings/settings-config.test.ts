@@ -9,7 +9,7 @@ jest.mock('src/theme/theme-config', () => ({
   },
 }));
 
-import { SETTINGS_STORAGE_KEY, defaultSettings } from './settings-config';
+import { defaultSettings, SETTINGS_STORAGE_KEY } from './settings-config';
 
 describe('settings-config', () => {
   it('exports correct SETTINGS_STORAGE_KEY', () => {

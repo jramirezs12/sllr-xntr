@@ -3,7 +3,7 @@ jest.mock('embla-carousel-react', () => ({
   default: jest.fn(() => [jest.fn(), undefined]),
 }));
 
-import { renderHook, act } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 
 import { useThumbs } from './use-thumbs';
 

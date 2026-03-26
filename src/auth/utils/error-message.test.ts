@@ -1,6 +1,7 @@
-import { getErrorMessage } from './error-message';
 import { AppError } from 'src/lib/errors/app-error';
 import { ErrorCode } from 'src/lib/errors/error-codes';
+
+import { getErrorMessage } from './error-message';
 
 describe('getErrorMessage', () => {
   it('returns message for AppError with known code', () => {

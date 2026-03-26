@@ -1,5 +1,6 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import CTAForm from './CTAForm';
 

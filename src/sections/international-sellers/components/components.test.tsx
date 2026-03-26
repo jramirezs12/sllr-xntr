@@ -1,11 +1,12 @@
 import { render, screen } from '@testing-library/react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+import Footer from './Footer';
 import Benefits from './Benefits';
 import Features from './Features';
 import WhyCards from './WhyCards';
 import HowItWorks from './HowItWorks';
-import Footer from './Footer';
 import MiddlePanel from './MiddlePanel';
 import StartSelling from './StartSelling';
 

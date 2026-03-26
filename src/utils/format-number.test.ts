@@ -1,4 +1,4 @@
-import { fNumber, fCurrency, fPercent, fShortenNumber, fData } from './format-number';
+import { fData, fNumber, fPercent, fCurrency, fShortenNumber } from './format-number';
 
 describe('format-number utils', () => {
   describe('fNumber', () => {

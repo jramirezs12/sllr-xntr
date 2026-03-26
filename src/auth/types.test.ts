@@ -1,4 +1,4 @@
-import type { AuthContextValue, AuthState, UserType } from './types';
+import type { UserType, AuthState, AuthContextValue } from './types';
 
 describe('auth types', () => {
   it('allows UserType as object', () => {

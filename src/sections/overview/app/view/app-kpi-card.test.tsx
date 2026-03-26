@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { AppKpiCard } from './app-kpi-card';
 
