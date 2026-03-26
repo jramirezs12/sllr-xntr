@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import type { ButtonBaseProps } from '@mui/material/ButtonBase';
 import type { Theme, SxProps, CSSObject } from '@mui/material/styles';
 

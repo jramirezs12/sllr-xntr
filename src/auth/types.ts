@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 export type UserType = Record<string, any> | null;
 
 export type AuthState = {
