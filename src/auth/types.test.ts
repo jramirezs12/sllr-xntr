@@ -1,27 +1,38 @@
-import type { AuthState, AuthContextValue, UserType } from './types';
+import type { AuthContextValue, AuthState, UserType } from './types';
 
 describe('auth types', () => {
-  it('AuthState has user and loading', () => {
-    const state: AuthState = { user: null, loading: false };
-    expect(state.user).toBeNull();
-    expect(state.loading).toBe(false);
+  it('allows UserType as object', () => {
+    const user: UserType = { id: '1', name: 'Juan' };
+    expect(user).toEqual({ id: '1', name: 'Juan' });
   });
 
-  it('AuthContextValue has expected shape', () => {
-    const ctx: AuthContextValue = {
-      user: { id: '1' },
+  it('allows UserType as null', () => {
+    const user: UserType = null;
+    expect(user).toBeNull();
+  });
+
+  it('supports AuthState shape', () => {
+    const state: AuthState = {
+      user: { email: 'test@mail.com' },
       loading: false,
-      authenticated: true,
-      unauthenticated: false,
     };
-    expect(ctx.authenticated).toBe(true);
-    expect(ctx.unauthenticated).toBe(false);
+
+    expect(state.loading).toBe(false);
+    expect((state.user as Record<string, unknown>).email).toBe('test@mail.com');
   });
 
-  it('UserType can be null or record', () => {
-    const u1: UserType = null;
-    const u2: UserType = { id: '1', name: 'Test' };
-    expect(u1).toBeNull();
-    expect(u2).toHaveProperty('id');
+  it('supports AuthContextValue required flags', async () => {
+    const ctx: AuthContextValue = {
+      user: null,
+      loading: true,
+      authenticated: false,
+      unauthenticated: true,
+      checkUserSession: async () => {},
+    };
+
+    expect(ctx.loading).toBe(true);
+    expect(ctx.authenticated).toBe(false);
+    expect(ctx.unauthenticated).toBe(true);
+    await expect(ctx.checkUserSession?.()).resolves.toBeUndefined();
   });
 });
