@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 export interface ValidateMassUploadRequestInterface {
   fileContentBase64: string;
   fileName: string;

@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 export interface ReviewListResponse {
   sellerProducts: SellerProducts;
   total_count: number;

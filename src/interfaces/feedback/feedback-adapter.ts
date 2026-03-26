@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 export interface FeedbackAdapterInterface {
     feedbackListAdapter: FeedbackItems[]
 }
