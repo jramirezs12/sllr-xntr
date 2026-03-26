@@ -20,7 +20,7 @@ jest.mock('framer-motion', () => ({
 describe('RoleBasedGuard', () => {
   it('renders children when role is allowed', () => {
     render(
-      <RoleBasedGuard currentRole="admin" allowedRoles={["admin", "editor"]}>
+      <RoleBasedGuard currentRole="admin" allowedRoles={['admin', 'editor']}>
         <div>secured content</div>
       </RoleBasedGuard>
     );
@@ -30,7 +30,7 @@ describe('RoleBasedGuard', () => {
 
   it('renders nothing when role is not allowed and hasContent is false', () => {
     const { container } = render(
-      <RoleBasedGuard currentRole="viewer" allowedRoles={["admin"]} hasContent={false}>
+      <RoleBasedGuard currentRole="viewer" allowedRoles={['admin']} hasContent={false}>
         <div>secured content</div>
       </RoleBasedGuard>
     );
@@ -40,7 +40,7 @@ describe('RoleBasedGuard', () => {
 
   it('renders permission denied content when role is not allowed and hasContent is true', () => {
     render(
-      <RoleBasedGuard currentRole="viewer" allowedRoles={["admin"]} hasContent>
+      <RoleBasedGuard currentRole="viewer" allowedRoles={['admin']} hasContent>
         <div>secured content</div>
       </RoleBasedGuard>
     );
