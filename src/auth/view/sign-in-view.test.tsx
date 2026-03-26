@@ -111,6 +111,8 @@ describe('SignInView', () => {
   });
 
   it('shows mapped error message when submit fails', async () => {
+    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+
     mockMutateAsync.mockRejectedValue(new Error('backend failed'));
     mockGetErrorMessage.mockReturnValue('Mensaje controlado');
 
@@ -120,5 +122,7 @@ describe('SignInView', () => {
 
     expect(await screen.findByText('Mensaje controlado')).toBeInTheDocument();
     expect(mockRefresh).not.toHaveBeenCalled();
+
+    consoleError.mockRestore();
   });
 });
