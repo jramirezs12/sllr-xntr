@@ -2,6 +2,8 @@ jest.mock('src/routes/components', () => ({
   RouterLink: 'a',
 }));
 
+import React from 'react';
+
 import { createNavItem } from './create-nav-item';
 
 describe('createNavItem', () => {
@@ -41,13 +43,14 @@ describe('createNavItem', () => {
   });
 
   it('renders icon directly when icon is not a string', () => {
-    const icon = <svg />;
+    const icon = React.createElement('svg');
     const result = createNavItem({ path: '/', depth: 1, icon });
     expect(result.renderIcon).toBe(icon);
   });
 
   it('renders info directly when not an array', () => {
-    const result = createNavItem({ path: '/', depth: 1, info: <span>Badge</span> });
+    const infoEl = React.createElement('span', null, 'Badge');
+    const result = createNavItem({ path: '/', depth: 1, info: infoEl });
     expect(result.renderInfo).toBeTruthy();
   });
 });

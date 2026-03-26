@@ -1,3 +1,7 @@
+jest.mock('@mui/material/useMediaQuery', () => ({
+  __esModule: true,
+  default: jest.fn(() => false),
+}));
 jest.mock('framer-motion', () => ({
   m: {
     div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
@@ -5,8 +9,8 @@ jest.mock('framer-motion', () => ({
   },
   AnimatePresence: ({ children }: any) => <>{children}</>,
   useInView: jest.fn(() => true),
-  useMotionValue: jest.fn((v: any) => ({ get: () => v, set: jest.fn() })),
-  useTransform: jest.fn(() => ({ get: () => '0' })),
+  useMotionValue: jest.fn((v: any) => v),
+  useTransform: jest.fn(() => '0'),
   animate: jest.fn(),
 }));
 

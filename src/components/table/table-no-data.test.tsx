@@ -7,8 +7,14 @@ jest.mock('minimal-shared/utils', () => ({
 
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { TableNoData } from './table-no-data';
+
+const theme = createTheme({ cssVariables: true });
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <ThemeProvider theme={theme}>{children}</ThemeProvider>
+);
 
 describe('TableNoData', () => {
   it('renders empty cell when notFound is false', () => {
@@ -17,7 +23,8 @@ describe('TableNoData', () => {
         <tbody>
           <TableNoData notFound={false} />
         </tbody>
-      </table>
+      </table>,
+      { wrapper }
     );
     const row = screen.getByRole('row');
     expect(row).toBeInTheDocument();
@@ -29,7 +36,8 @@ describe('TableNoData', () => {
         <tbody>
           <TableNoData notFound />
         </tbody>
-      </table>
+      </table>,
+      { wrapper }
     );
     expect(screen.getByRole('row')).toBeInTheDocument();
   });

@@ -18,14 +18,20 @@ jest.mock('../../custom-popover', () => ({
 
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { ChartSelect } from './chart-select';
+
+const theme = createTheme({ cssVariables: true });
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <ThemeProvider theme={theme}>{children}</ThemeProvider>
+);
 
 describe('ChartSelect', () => {
   const options = ['Monthly', 'Weekly', 'Daily'];
 
   it('renders the current value', () => {
-    render(<ChartSelect options={options} value="Monthly" onChange={jest.fn()} />);
+    render(<ChartSelect options={options} value="Monthly" onChange={jest.fn()} />, { wrapper });
     expect(screen.getByText('Monthly')).toBeInTheDocument();
   });
 
@@ -34,7 +40,7 @@ describe('ChartSelect', () => {
     const onOpen = jest.fn();
     usePopover.mockReturnValueOnce({ open: false, anchorEl: null, onClose: jest.fn(), onOpen });
 
-    render(<ChartSelect options={options} value="Monthly" onChange={jest.fn()} />);
+    render(<ChartSelect options={options} value="Monthly" onChange={jest.fn()} />, { wrapper });
     const button = screen.getByRole('button');
     fireEvent.click(button);
     expect(onOpen).toHaveBeenCalled();

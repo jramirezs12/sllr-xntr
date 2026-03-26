@@ -25,8 +25,8 @@ describe('ChartLegends', () => {
   });
 
   it('renders sublabels when provided', () => {
-    render(<ChartLegends labels={['A']} sublabels={['(Jan)']} />);
-    expect(screen.getByText(/ \(Jan\)/)).toBeInTheDocument();
+    render(<ChartLegends labels={['A']} sublabels={['Jan']} />);
+    expect(screen.getByText(/\(Jan\)/)).toBeInTheDocument();
   });
 
   it('renders empty list when no labels', () => {

@@ -46,7 +46,7 @@ describe('varFade', () => {
   });
 
   it('merges transitionIn options', () => {
-    const result = varFade('in', { transitionIn: { duration: 0.5 } });
+    const result = varFade('inUp', { transitionIn: { duration: 0.5 } });
     expect((result.animate as any).transition.duration).toBe(0.5);
   });
 });

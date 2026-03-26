@@ -7,12 +7,18 @@ jest.mock('minimal-shared/utils', () => ({
 
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { CustomBreadcrumbs } from './custom-breadcrumbs';
 
+const theme = createTheme({ cssVariables: true });
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <ThemeProvider theme={theme}>{children}</ThemeProvider>
+);
+
 describe('CustomBreadcrumbs', () => {
   it('renders heading when provided', () => {
-    render(<CustomBreadcrumbs heading="Dashboard" />);
+    render(<CustomBreadcrumbs heading="Dashboard" />, { wrapper });
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
   });
 
@@ -23,19 +29,20 @@ describe('CustomBreadcrumbs', () => {
           { name: 'Home', href: '/' },
           { name: 'Settings', href: '/settings' },
         ]}
-      />
+      />,
+      { wrapper }
     );
     expect(screen.getByText('Home')).toBeInTheDocument();
     expect(screen.getByText('Settings')).toBeInTheDocument();
   });
 
   it('renders action when provided', () => {
-    render(<CustomBreadcrumbs action={<button>Add</button>} />);
+    render(<CustomBreadcrumbs action={<button>Add</button>} />, { wrapper });
     expect(screen.getByRole('button', { name: 'Add' })).toBeInTheDocument();
   });
 
-  it('renders nothing by default when no links or heading', () => {
-    const { container } = render(<CustomBreadcrumbs />);
+  it('renders without crashing when no props', () => {
+    const { container } = render(<CustomBreadcrumbs />, { wrapper });
     expect(container).toBeInTheDocument();
   });
 });

@@ -1,4 +1,10 @@
-import { renderHook, act } from '@testing-library/react';
+global.ResizeObserver = jest.fn(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+})) as any;
+
+import { renderHook } from '@testing-library/react';
 
 import { useElementRect } from './hooks';
 
@@ -22,9 +28,7 @@ describe('useElementRect', () => {
       top: 10, left: 20, width: 100, height: 50, right: 120, bottom: 60, x: 20, y: 10, toJSON: () => ({}),
     });
 
-    const { result } = renderHook(() => useElementRect(el, 'anchor', true));
-
-    act(() => {});
+    renderHook(() => useElementRect(el, 'anchor', true));
 
     document.body.removeChild(el);
   });
