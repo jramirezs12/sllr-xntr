@@ -83,6 +83,10 @@ describe('routes hooks coverage harness', () => {
     fireEvent.click(screen.getByRole('button', { name: 'replace' }));
     expect(mockedStart).toHaveBeenCalledTimes(1);
     expect(mockedReplace).toHaveBeenCalledWith('/target-replace', undefined);
+
+    mockedIsEqualPath.mockReturnValue(false);
+    fireEvent.click(screen.getByRole('button', { name: 'replace' }));
+    expect(mockedStart).toHaveBeenCalledTimes(2);
   });
 
   it('keeps wrapped push/replace methods in the memoized router object', () => {

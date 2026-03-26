@@ -94,6 +94,7 @@ describe('theme mixins coverage harness', () => {
     expect(filledStyles(theme, 'primary', { hover: { outline: '1px solid red' } })['&:hover'].outline).toBe(
       '1px solid red'
     );
+    expect(filledStyles(theme, undefined as any)).toEqual({});
 
     expect(softStyles(theme, 'default').boxShadow).toBe('none');
     expect(softStyles(theme, 'inherit').backgroundColor).toContain('rgba');
@@ -101,6 +102,11 @@ describe('theme mixins coverage harness', () => {
     expect(softStyles(theme, 'black').color).toBe(theme.vars.palette.common.black);
     expect(softStyles(theme, 'primary').color).toBeDefined();
     expect(softStyles(theme, 'primary', { hover: true })['&:hover']).toBeDefined();
+    expect(softStyles(theme, undefined as any)).toEqual({});
+
+    expect(maxLine({ line: 2, persistent: { lineHeight: 1.5 } }).WebkitLineClamp).toBe(2);
+    expect(maxLine({ line: 2, persistent: { fontSize: '1rem' } }).WebkitLineClamp).toBe(2);
+    expect(maxLine({ line: 2, persistent: { fontSize: '1rem', lineHeight: 1.5, '@media-sm': { fontSize: '0rem' } as any } as any }).WebkitLineClamp).toBe(2);
 
     expect(mixins.hideScrollX).toBeDefined();
     expect(mixins.hideScrollY).toBeDefined();

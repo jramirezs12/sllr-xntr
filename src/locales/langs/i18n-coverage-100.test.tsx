@@ -100,4 +100,24 @@ describe('i18n coverage harness', () => {
       window.localStorage.setItem('i18n_lang', 'invalid');
     });
   });
+
+  it('covers fallback resolution when namespace is missing in overloaded translate API', async () => {
+    Object.defineProperty(window.navigator, 'language', {
+      configurable: true,
+      value: 'en-US',
+    });
+
+    const FallbackConsumer = () => {
+      const { translate } = useTranslate();
+      return <div data-testid="fallback-ns">{translate('missing.namespace', 'fallback-key')}</div>;
+    };
+
+    render(
+      <TranslateProvider>
+        <FallbackConsumer />
+      </TranslateProvider>
+    );
+
+    await waitFor(() => expect(screen.getByTestId('fallback-ns')).toHaveTextContent('fallback-key'));
+  });
 });
