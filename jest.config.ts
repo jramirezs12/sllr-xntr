@@ -13,6 +13,8 @@ const config: Config = {
     "src/**/*.{ts,tsx}", // Incluye todos los archivos TypeScript en la carpeta src
     "!src/**/*.d.ts",    // Excluye archivos de definición de TypeScript
     "!src/**/index.ts",   // Excluye archivos index.ts
+    "!src/**/types.ts",
+    "!src/interfaces/**",
     "!src/_mock/**"
   ],
   coverageDirectory: "coverage",
