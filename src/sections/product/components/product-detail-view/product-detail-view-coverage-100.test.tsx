@@ -29,7 +29,19 @@ jest.mock('src/components/hook-form', () => ({
 }));
 
 jest.mock('src/components/markdown', () => ({
-  Markdown: ({ children }: { children: React.ReactNode }) => <div data-testid="markdown">{children}</div>,
+  Markdown: ({ children, sx }: { children: React.ReactNode; sx?: any }) => {
+    const theme = {};
+    (Array.isArray(sx) ? sx : [sx]).forEach((entry: any) => {
+      if (typeof entry === 'function') entry(theme);
+    });
+    return <div data-testid="markdown">{children}</div>;
+  },
+}));
+
+jest.mock('react-hook-form', () => ({
+  useForm: () => ({
+    handleSubmit: (cb: () => void) => () => cb(),
+  }),
 }));
 
 jest.mock('src/utils/format-number', () => ({
@@ -54,15 +66,20 @@ jest.mock('src/components/carousel', () => ({
   CarouselArrowNumberButtons: () => <div data-testid="carousel-arrows" />,
 }));
 
+let mockLightboxOpen = true;
+
 jest.mock('src/components/lightbox', () => ({
   useLightbox: () => ({
     onClose: mockedOnClose,
     onOpen: mockedOnOpen,
-    open: true,
+    open: mockLightboxOpen,
     selected: 1,
     setSelected: mockedSetSelected,
   }),
-  Lightbox: ({ open }: { open: boolean }) => <div data-testid={`lightbox-${open}`} />,
+  Lightbox: ({ onGetCurrentIndex, open }: { onGetCurrentIndex: (index: number) => void; open: boolean }) => {
+    onGetCurrentIndex(0);
+    return <div data-testid={`lightbox-${open}`} />;
+  },
 }));
 
 const theme = createTheme({ cssVariables: true } as any);
@@ -72,6 +89,7 @@ const renderWithTheme = (ui: React.ReactElement) =>
 
 describe('product detail view 100 coverage harness', () => {
   it('covers configurable options states and summary branches', () => {
+    mockLightboxOpen = true;
     const configurableOptions = [
       {
         frontend_input: 'swatch_visual',
@@ -153,6 +171,21 @@ describe('product detail view 100 coverage harness', () => {
         } as any}
       />
     );
+    renderWithTheme(
+      <ProductDetailsSummary
+        product={{
+          category: 'Category A',
+          configurableOptions,
+          discountPercent: 0,
+          inStock: true,
+          name: 'Main Product no discount',
+          price: 99,
+          sku: 'MAIN-SKU-2',
+          stock: 5,
+          variants,
+        } as any}
+      />
+    );
 
     renderWithTheme(
       <ProductDetailsSummary
@@ -184,6 +217,8 @@ describe('product detail view 100 coverage harness', () => {
     renderWithTheme(<ProductDetailsDescription description="plain text" sx={{ p: 1 }} />);
 
     renderWithTheme(<ProductDetailsCarousel images={['/img-1.png', '/img-2.png']} />);
+    mockLightboxOpen = false;
+    renderWithTheme(<ProductDetailsCarousel images={['/img-1.png']} />);
     fireEvent.click(screen.getAllByRole('button', { name: /thumb-/i })[0]);
     fireEvent.click(screen.getAllByAltText('/img-1.png')[0]);
 

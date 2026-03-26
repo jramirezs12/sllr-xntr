@@ -20,6 +20,7 @@ describe('animate variants 100 coverage harness', () => {
     expect(transitionHover({ duration: 1 }).duration).toBe(1);
 
     expect(varFade('in').animate).toBeDefined();
+    expect(varFade('in', { transition: { duration: 1 } }).animate).toBeDefined();
     expect(varFade('inUp').animate).toBeDefined();
     expect(varFade('inDown').animate).toBeDefined();
     expect(varFade('inLeft').animate).toBeDefined();
@@ -31,6 +32,7 @@ describe('animate variants 100 coverage harness', () => {
     expect(varFade('outRight').animate).toBeDefined();
 
     expect(varZoom('in').animate).toBeDefined();
+    expect(varZoom('in', { transitionIn: { duration: 1 }, transitionOut: { duration: 2 } }).animate).toBeDefined();
     expect(varZoom('inUp').animate).toBeDefined();
     expect(varZoom('inDown').animate).toBeDefined();
     expect(varZoom('inLeft').animate).toBeDefined();
@@ -42,11 +44,13 @@ describe('animate variants 100 coverage harness', () => {
     expect(varZoom('outRight').animate).toBeDefined();
 
     expect(varFlip('inX').animate).toBeDefined();
+    expect(varFlip('inX', { transitionIn: { duration: 1 }, transitionOut: { duration: 2 } }).animate).toBeDefined();
     expect(varFlip('inY').animate).toBeDefined();
     expect(varFlip('outX').animate).toBeDefined();
     expect(varFlip('outY').animate).toBeDefined();
 
     expect(varSlide('inUp').animate).toBeDefined();
+    expect(varSlide('inUp', { distance: 50, transitionIn: { duration: 1 }, transitionOut: { duration: 2 } }).animate).toBeDefined();
     expect(varSlide('inDown').animate).toBeDefined();
     expect(varSlide('inLeft').animate).toBeDefined();
     expect(varSlide('inRight').animate).toBeDefined();
@@ -56,6 +60,7 @@ describe('animate variants 100 coverage harness', () => {
     expect(varSlide('outRight').animate).toBeDefined();
 
     expect(varScale('in').animate).toBeDefined();
+    expect(varScale('in', { transitionIn: { duration: 1 }, transitionOut: { duration: 2 } }).animate).toBeDefined();
     expect(varScale('inX').animate).toBeDefined();
     expect(varScale('inY').animate).toBeDefined();
     expect(varScale('out').animate).toBeDefined();

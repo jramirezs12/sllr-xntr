@@ -38,9 +38,12 @@ jest.mock('framer-motion', () => {
   const ReactActual = jest.requireActual('react');
   return {
     domMax: 'domMax-feature',
-    LazyMotion: ({ children }: { children: React.ReactNode }) => (
-      <div data-testid="lazy-motion">{children}</div>
-    ),
+    LazyMotion: ({ children, features: loadFeatures }: { children: React.ReactNode; features?: () => Promise<unknown> }) => {
+      ReactActual.useEffect(() => {
+        void loadFeatures?.();
+      }, [loadFeatures]);
+      return <div data-testid="lazy-motion">{children}</div>;
+    },
     m: {
       div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
       svg: ({ children, ...props }: any) => <svg {...props}>{children}</svg>,
@@ -139,9 +142,11 @@ describe('animate 100 coverage harness', () => {
 
     renderWithTheme(<AnimateLogoZoom />);
     renderWithTheme(<AnimateLogoZoom slotProps={{ logo: { sx: [{ m: 1 }] } as any }} />);
+    renderWithTheme(<AnimateLogoZoom slotProps={{ logo: { sx: { m: 1 } } as any }} />);
     renderWithTheme(<AnimateLogoZoom logo={<span>custom-logo</span>} />);
     renderWithTheme(<AnimateLogoRotate />);
     renderWithTheme(<AnimateLogoRotate slotProps={{ logo: { sx: [{ m: 1 }] } as any }} />);
+    renderWithTheme(<AnimateLogoRotate slotProps={{ logo: { sx: { m: 1 } } as any }} />);
     renderWithTheme(<AnimateLogoRotate logo={<span>custom-rotate</span>} />);
 
     renderWithTheme(
@@ -164,8 +169,9 @@ describe('animate 100 coverage harness', () => {
       <AnimateText repeatDelayMs={0} textContent={['Hola mundo', 'Linea dos']} />
     );
     mockedUseInView.mockReturnValueOnce(true);
-    mockedUseInView.mockReturnValueOnce(false);
     renderWithTheme(<AnimateText repeatDelayMs={10} textContent="single line" />);
+    mockedUseInView.mockReturnValueOnce(false);
+    renderWithTheme(<AnimateText repeatDelayMs={10} textContent="out of view line" />);
     jest.advanceTimersByTime(20);
 
     renderWithTheme(
@@ -179,6 +185,14 @@ describe('animate 100 coverage harness', () => {
       >
         <span>border-child</span>
       </AnimateBorder>
+    );
+    renderWithTheme(
+      <AnimateBorder
+        slotProps={{
+          primaryBorder: { size: 12, width: '2px' },
+          secondaryBorder: { size: 10, width: '1px', sx: { p: 1 } },
+        }}
+      />
     );
 
     Object.defineProperty(SVGElement.prototype, 'getTotalLength', {

@@ -61,9 +61,23 @@ jest.mock('src/layouts/nav-config-dashboard', () => ({
 
 jest.mock('src/components/nav-section', () => ({
   bulletColor: { dark: '#111' },
-  NavSectionHorizontal: ({ data }: any) => <div data-testid="nav-horizontal">{data.length}</div>,
-  NavSectionMini: ({ data }: any) => <div data-testid="nav-mini">{data.length}</div>,
-  NavSectionVertical: ({ data }: any) => <div data-testid="nav-vertical">{data.length}</div>,
+  NavSectionHorizontal: ({ checkPermissions, data }: any) => {
+    checkPermissions?.(['admin']);
+    checkPermissions?.(['seller']);
+    return <div data-testid="nav-horizontal">{data.length}</div>;
+  },
+  NavSectionMini: ({ data, sx }: any) => {
+    const theme = { mixins: { hideScrollY: {} } };
+    (Array.isArray(sx) ? sx : [sx]).forEach((entry: any) => {
+      if (typeof entry === 'function') entry(theme);
+    });
+    return <div data-testid="nav-mini">{data.length}</div>;
+  },
+  NavSectionVertical: ({ checkPermissions, data }: any) => {
+    checkPermissions?.(['admin']);
+    checkPermissions?.(['seller']);
+    return <div data-testid="nav-vertical">{data.length}</div>;
+  },
 }));
 
 jest.mock('src/components/scrollbar', () => ({
@@ -90,7 +104,13 @@ jest.mock('../components', () => ({
   SignOutButton: () => <button type="button">sign-out</button>,
   StoreButton: () => <button type="button">store</button>,
   ThemeToggleButton: () => <button type="button">theme</button>,
-  NavToggleButton: ({ onClick }: { onClick: () => void }) => <button type="button" onClick={onClick}>toggle-nav</button>,
+  NavToggleButton: ({ onClick, sx }: { onClick: () => void; sx?: any }) => {
+    const theme = { breakpoints: { up: () => 'md' } };
+    (Array.isArray(sx) ? sx : [sx]).forEach((entry: any) => {
+      if (typeof entry === 'function') entry(theme);
+    });
+    return <button type="button" onClick={onClick}>toggle-nav</button>;
+  },
 }));
 
 jest.mock('../core', () => ({
@@ -130,6 +150,11 @@ describe('home layout 100 coverage harness', () => {
         <div>content child</div>
       </HomeContent>
     );
+    renderWithTheme(
+      <HomeContent maxWidth="sm" layoutQuery="md">
+        <div>content child no padding toggle</div>
+      </HomeContent>
+    );
     renderWithTheme(<VerticalDivider />);
 
     renderWithTheme(
@@ -155,6 +180,7 @@ describe('home layout 100 coverage harness', () => {
         data={[{ path: '/a', title: 'a' }] as any}
         isNavMini
         onToggleNav={jest.fn()}
+        slots={{ bottomArea: <div>bottom-mini</div>, topArea: <div>top-mini</div> }}
       />
     );
 
@@ -183,6 +209,8 @@ describe('home layout 100 coverage harness', () => {
     mockedSettingsState.navColor = 'apparent';
     mockedSettingsState.navLayout = 'horizontal';
     renderWithTheme(<HomeLayout><div>layout child horizontal</div></HomeLayout>);
+    mockedSettingsState.navLayout = 'mini';
+    renderWithTheme(<HomeLayout><div>layout child mini</div></HomeLayout>);
 
     fireEvent.click(screen.getAllByText('menu')[0]);
     screen.getAllByText('toggle-nav').forEach((button) => fireEvent.click(button));

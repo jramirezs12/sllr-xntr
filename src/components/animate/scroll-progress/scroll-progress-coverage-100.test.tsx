@@ -92,6 +92,16 @@ describe('scroll-progress 100 coverage harness', () => {
         />
       )
     );
+    render(
+      withTheme(
+        <ScrollProgress
+          variant="circular"
+          progress={{ value: 0.3 } as any}
+          whenScroll="x"
+          color="primary"
+        />
+      )
+    );
 
     expect(scrollProgressIndex).toBeDefined();
     expect(mockedUseScroll).toHaveBeenCalled();
