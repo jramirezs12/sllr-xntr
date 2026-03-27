@@ -6,7 +6,7 @@ describe('iconify/icon-sets', () => {
 
     expect(entries.length).toBeGreaterThan(0);
 
-    entries.slice(0, 50).forEach(([key, value]) => {
+    entries.forEach(([key, value]) => {
       expect(key).toContain(':');
       expect(value).toBeTruthy();
       expect(typeof value).toBe('object');
