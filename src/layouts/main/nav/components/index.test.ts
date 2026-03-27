@@ -18,4 +18,3 @@ describe('main nav components index exports', () => {
     expect(navComponents.NavUl).toBeDefined();
   });
 });
-
