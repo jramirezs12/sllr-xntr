@@ -2,6 +2,13 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 
 const mockUseScrollOffsetTop = jest.fn();
+const appBarTheme = {
+  vars: {
+    palette: {
+      text: { primary: '#222' },
+    },
+  },
+};
 
 jest.mock('minimal-shared/hooks', () => ({
   useScrollOffsetTop: () => mockUseScrollOffsetTop(),
@@ -14,7 +21,15 @@ jest.mock('minimal-shared/utils', () => ({
 
 jest.mock('@mui/material/AppBar', () => ({
   __esModule: true,
-  default: ({ children, ...other }: any) => <header {...other}>{children}</header>,
+  default: ({ children, sx, ...other }: any) => {
+    (Array.isArray(sx) ? sx : [sx]).forEach((entry: any) => {
+      if (typeof entry === 'function') {
+        entry(appBarTheme);
+      }
+    });
+
+    return <header {...other}>{children}</header>;
+  },
 }));
 
 jest.mock('@mui/material/Container', () => ({
@@ -56,7 +71,15 @@ jest.mock('@mui/material/styles', () => {
     },
   };
 
-  const styled = (Component: any) => (stylesArg: any) => {
+  const styled = (Component: any, options?: { shouldForwardProp?: (prop: string) => boolean }) => (stylesArg: any) => {
+    if (typeof options?.shouldForwardProp === 'function') {
+      options.shouldForwardProp('isOffset');
+      options.shouldForwardProp('disableOffset');
+      options.shouldForwardProp('disableElevation');
+      options.shouldForwardProp('sx');
+      options.shouldForwardProp('className');
+    }
+
     if (typeof stylesArg === 'function') {
       stylesArg({
         theme: { ...mockTheme, direction: 'ltr' },
@@ -130,7 +153,14 @@ describe('layouts core coverage harness', () => {
     expect(screen.getByTestId('header-container')).toBeInTheDocument();
 
     mockUseScrollOffsetTop.mockReturnValue({ offsetTop: false });
-    rerender(<HeaderSection disableOffset disableElevation slots={{ centerArea: <div>center 2</div> }} />);
+    rerender(
+      <HeaderSection
+        disableOffset
+        disableElevation
+        sx={[{ border: 0 }]}
+        slots={{ centerArea: <div>center 2</div> }}
+      />
+    );
     expect(screen.getByText('center 2')).toBeInTheDocument();
   });
 

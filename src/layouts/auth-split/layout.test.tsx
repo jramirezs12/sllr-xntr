@@ -11,10 +11,22 @@ jest.mock('./content', () => ({
 }));
 
 jest.mock('../core', () => ({
-  HeaderSection: () => <header data-testid="auth-header" />,
-  MainSection: ({ children }: { children: React.ReactNode }) => (
-    <main data-testid="auth-main-section">{children}</main>
-  ),
+  HeaderSection: ({ sx }: any) => {
+    const theme = { breakpoints: { up: (value: string) => value } };
+    (Array.isArray(sx) ? sx : [sx]).forEach((entry: any) => {
+      if (typeof entry === 'function') entry(theme);
+    });
+
+    return <header data-testid="auth-header" />;
+  },
+  MainSection: ({ children, sx }: { children: React.ReactNode; sx?: any }) => {
+    const theme = { breakpoints: { up: (value: string) => value } };
+    (Array.isArray(sx) ? sx : [sx]).forEach((entry: any) => {
+      if (typeof entry === 'function') entry(theme);
+    });
+
+    return <main data-testid="auth-main-section">{children}</main>;
+  },
   LayoutSection: ({ children, headerSection, cssVars }: any) => (
     <div data-testid="auth-layout" data-css-vars={JSON.stringify(cssVars)}>
       {headerSection}
@@ -32,7 +44,16 @@ describe('AuthSplitLayout', () => {
   });
 
   it('sets default auth css vars and keeps custom vars', () => {
-    render(<AuthSplitLayout>Auth body</AuthSplitLayout>);
+    render(
+      <AuthSplitLayout
+        slotProps={{
+          header: { sx: [{ border: 0 }] as any },
+          main: { sx: [{ border: 0 }] as any },
+        }}
+      >
+        Auth body
+      </AuthSplitLayout>
+    );
 
     const cssVars = JSON.parse(screen.getByTestId('auth-layout').getAttribute('data-css-vars') || '{}');
 

@@ -28,9 +28,15 @@ jest.mock('@mui/material/Collapse', () => ({
 
 jest.mock('src/components/nav-section', () => ({
   navSectionClasses: { item: { title: 'title' } },
-  NavSectionVertical: ({ data }: { data: any[] }) => (
-    <div data-testid="mobile-vertical-section">{data.map((entry) => entry.subheader).join(',')}</div>
-  ),
+  NavSectionVertical: ({ data, slotProps }: { data: any[]; slotProps?: any }) => {
+    const theme = { vars: { palette: { grey: { '500Channel': '125 125 125' } } } };
+    const rootSx = slotProps?.rootItem?.sx ?? [];
+    (Array.isArray(rootSx) ? rootSx : [rootSx]).forEach((entry: any) => {
+      if (typeof entry === 'function') entry(theme);
+    });
+
+    return <div data-testid="mobile-vertical-section">{data.map((entry) => entry.subheader).join(',')}</div>;
+  },
 }));
 
 jest.mock('../components', () => ({

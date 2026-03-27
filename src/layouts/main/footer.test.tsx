@@ -67,4 +67,11 @@ describe('main footer components', () => {
       'https://minimals.cc/'
     );
   });
+
+  it('supports HomeFooter sx array inputs', () => {
+    renderWithTheme(<HomeFooter sx={[{ borderTop: '1px solid red' }]} />);
+
+    expect(screen.getByTestId('logo')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'minimals.cc' })).toBeInTheDocument();
+  });
 });

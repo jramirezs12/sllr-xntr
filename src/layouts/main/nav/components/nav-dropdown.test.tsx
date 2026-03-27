@@ -12,7 +12,20 @@ jest.mock('@mui/material/Fade', () => ({
 }));
 
 jest.mock('@mui/material/styles', () => ({
-  styled: (Component: any) => () => {
+  styled: (Component: any) => (stylesArg: any) => {
+    if (typeof stylesArg === 'function') {
+      const theme = {
+        direction: 'ltr',
+        zIndex: { drawer: 1200 },
+        shape: { borderRadius: 8 },
+        spacing: (...args: number[]) => args.join('px '),
+        breakpoints: { values: { lg: 1200 } },
+        mixins: { paperStyles: () => ({ border: '1px solid transparent' }) },
+      };
+      stylesArg({ theme });
+      stylesArg({ theme: { ...theme, direction: 'rtl' } });
+    }
+
     const StyledComponent = ({ children, ...props }: any) => <Component {...props}>{children}</Component>;
 
     return StyledComponent;

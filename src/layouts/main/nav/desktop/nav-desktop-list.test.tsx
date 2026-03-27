@@ -22,8 +22,13 @@ jest.mock('src/routes/hooks', () => ({
 }));
 
 jest.mock('./nav-desktop-item', () => ({
-  NavItem: ({ title, onMouseEnter, hasChild }: any) => (
-    <button type="button" data-has-child={String(Boolean(hasChild))} onMouseEnter={onMouseEnter}>
+  NavItem: ({ title, onMouseEnter, onMouseLeave, hasChild }: any) => (
+    <button
+      type="button"
+      data-has-child={String(Boolean(hasChild))}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       {title}
     </button>
   ),
@@ -35,7 +40,14 @@ jest.mock('./nav-desktop-item-dashboard', () => ({
 
 jest.mock('../components', () => ({
   Nav: ({ children }: { children: React.ReactNode }) => <nav>{children}</nav>,
-  NavLi: ({ children }: { children: React.ReactNode }) => <li>{children}</li>,
+  NavLi: ({ children, sx }: { children: React.ReactNode; sx?: any }) => {
+    const theme = { typography: { pxToRem: (value: number) => `${value / 16}rem` } };
+    (Array.isArray(sx) ? sx : [sx]).forEach((entry: any) => {
+      if (typeof entry === 'function') entry(theme);
+    });
+
+    return <li>{children}</li>;
+  },
   NavUl: ({ children }: { children: React.ReactNode }) => <ul>{children}</ul>,
   NavDropdown: ({ children, open }: { children: React.ReactNode; open: boolean }) => (
     <div data-testid="desktop-dropdown" data-open={String(open)}>
@@ -67,6 +79,8 @@ describe('NavList (desktop)', () => {
     fireEvent.mouseEnter(screen.getByRole('button', { name: 'Products' }));
     expect(mockOnOpen).toHaveBeenCalledTimes(1);
     expect(screen.getByTestId('desktop-dropdown')).toBeInTheDocument();
+    fireEvent.mouseLeave(screen.getByRole('button', { name: 'Products' }));
+    expect(mockOnClose).toHaveBeenCalled();
   });
 
   it('renders dashboard child using NavItemDashboard', () => {
@@ -87,5 +101,22 @@ describe('NavList (desktop)', () => {
       'href',
       '/overview/app'
     );
+  });
+
+  it('closes dropdown when pathname changes while open', () => {
+    mockUsePathname.mockReturnValue('/changed');
+    mockUseBoolean.mockReturnValue({ value: true, onFalse: mockOnClose, onTrue: mockOnOpen });
+
+    render(
+      <NavList
+        data={{
+          title: 'Orders',
+          path: '/orders',
+          children: [{ subheader: 'Shop', items: [{ title: 'All', path: '/orders/all' }] }],
+        }}
+      />
+    );
+
+    expect(mockOnClose).toHaveBeenCalled();
   });
 });

@@ -5,9 +5,16 @@ import { MainLayout } from './layout';
 const mockOnOpen = jest.fn();
 const mockOnClose = jest.fn();
 const mockUsePathname = jest.fn();
+const mockUseBooleanValue = jest.fn();
 
 jest.mock('minimal-shared/hooks', () => ({
-  useBoolean: () => ({ value: false, onTrue: mockOnOpen, onFalse: mockOnClose }),
+  useBoolean: () => ({
+    get value() {
+      return mockUseBooleanValue();
+    },
+    onTrue: mockOnOpen,
+    onFalse: mockOnClose,
+  }),
 }));
 
 jest.mock('src/routes/hooks', () => ({
@@ -23,7 +30,14 @@ jest.mock('./nav/mobile', () => ({
 }));
 
 jest.mock('./nav/desktop', () => ({
-  NavDesktop: () => <div data-testid="nav-desktop" />,
+  NavDesktop: ({ sx }: { sx?: any }) => {
+    const theme = { breakpoints: { up: (value: string) => value } };
+    (Array.isArray(sx) ? sx : [sx]).forEach((entry: any) => {
+      if (typeof entry === 'function') entry(theme);
+    });
+
+    return <div data-testid="nav-desktop" />;
+  },
 }));
 
 jest.mock('./footer', () => ({
@@ -32,11 +46,30 @@ jest.mock('./footer', () => ({
 }));
 
 jest.mock('../components/menu-button', () => ({
-  MenuButton: ({ onClick }: { onClick?: () => void }) => (
-    <button type="button" onClick={onClick}>
+  MenuButton: ({ onClick, sx }: { onClick?: () => void; sx?: any }) => {
+    const theme = { breakpoints: { up: (value: string) => value } };
+    (Array.isArray(sx) ? sx : [sx]).forEach((entry: any) => {
+      if (typeof entry === 'function') entry(theme);
+    });
+
+    return (
+      <button type="button" onClick={onClick}>
       menu
-    </button>
-  ),
+      </button>
+    );
+  },
+}));
+
+jest.mock('@mui/material/Button', () => ({
+  __esModule: true,
+  default: ({ children, sx, ...other }: any) => {
+    const theme = { breakpoints: { up: (value: string) => value } };
+    (Array.isArray(sx) ? sx : [sx]).forEach((entry: any) => {
+      if (typeof entry === 'function') entry(theme);
+    });
+
+    return <button {...other}>{children}</button>;
+  },
 }));
 
 jest.mock('../components/sign-in-button', () => ({
@@ -52,15 +85,24 @@ jest.mock('../nav-config-main', () => ({
 }));
 
 jest.mock('../core', () => ({
-  HeaderSection: ({ slots }: { slots?: any }) => (
-    <header>
-      {slots?.topArea}
-      {slots?.leftArea}
-      {slots?.rightArea}
-    </header>
-  ),
-  MainSection: ({ children }: { children: React.ReactNode }) => (
-    <main data-testid="main-layout-content">{children}</main>
+  HeaderSection: ({ slots, sx }: { slots?: any; sx?: any }) => {
+    const theme = { breakpoints: { up: (value: string) => value } };
+    (Array.isArray(sx) ? sx : [sx]).forEach((entry: any) => {
+      if (typeof entry === 'function') entry(theme);
+    });
+
+    return (
+      <header>
+        {slots?.topArea}
+        {slots?.leftArea}
+        {slots?.rightArea}
+      </header>
+    );
+  },
+  MainSection: ({ children, ...other }: { children: React.ReactNode }) => (
+    <main data-testid="main-layout-content" {...other}>
+      {children}
+    </main>
   ),
   LayoutSection: ({ children, headerSection, footerSection }: any) => (
     <div>
@@ -76,6 +118,8 @@ describe('MainLayout', () => {
     mockOnOpen.mockReset();
     mockOnClose.mockReset();
     mockUsePathname.mockReset();
+    mockUseBooleanValue.mockReset();
+    mockUseBooleanValue.mockReturnValue(false);
   });
 
   it('renders HomeFooter on home path', () => {
@@ -103,5 +147,35 @@ describe('MainLayout', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'menu' }));
     expect(mockOnOpen).toHaveBeenCalledTimes(1);
+  });
+
+  it('passes open=true to NavMobile when boolean hook value is true', () => {
+    mockUsePathname.mockReturnValue('/');
+    mockUseBooleanValue.mockReturnValue(true);
+
+    render(<MainLayout>Body</MainLayout>);
+
+    expect(screen.getByTestId('nav-mobile')).toHaveAttribute('data-open', 'true');
+  });
+
+  it('passes slotProps and custom nav data through layout sections', () => {
+    mockUsePathname.mockReturnValue('/returns');
+
+    render(
+      <MainLayout
+        slotProps={{
+          nav: { data: [{ title: 'Custom', path: '/custom' } as any] },
+          header: { sx: [{ border: 0 }] as any },
+          footer: { sx: { border: 0 } as any },
+          main: { id: 'main-custom' } as any,
+        }}
+      >
+        Body
+      </MainLayout>
+    );
+
+    expect(screen.getByTestId('footer')).toBeInTheDocument();
+    expect(screen.getByTestId('main-layout-content')).toHaveAttribute('id', 'main-custom');
+    expect(screen.getByTestId('nav-mobile')).toBeInTheDocument();
   });
 });
