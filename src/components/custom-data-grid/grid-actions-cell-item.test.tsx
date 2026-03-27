@@ -1,13 +1,21 @@
 jest.mock('src/routes/components', () => ({
   RouterLink: 'a',
 }));
+
+const isExternalLink = jest.fn((href: string) => href.startsWith('http'));
+
 jest.mock('minimal-shared/utils', () => ({
   mergeClasses: (...args: any[]) => args.flat().filter(Boolean).join(' '),
-  isExternalLink: jest.fn((href: string) => href.startsWith('http')),
+  isExternalLink: (...args: any[]) => isExternalLink(...args),
 }));
+
+const gridActionsCellItemMock = jest.fn();
+
 jest.mock('@mui/x-data-grid', () => ({
-  GridActionsCellItem: ({ label, ...props }: any) => <button {...props}>{label}</button>,
-  menuItemClasses: { root: 'MuiMenuItem-root' },
+  GridActionsCellItem: ({ label, showInMenu, ...props }: any) => {
+    gridActionsCellItemMock({ label, showInMenu, ...props });
+    return <button {...props}>{label}</button>;
+  },
 }));
 jest.mock('@mui/material/Link', () => 'a');
 
@@ -17,6 +25,10 @@ import { render, screen } from '@testing-library/react';
 import { CustomGridActionsCellItem } from './grid-actions-cell-item';
 
 describe('CustomGridActionsCellItem', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders action item without href', () => {
     render(
       <CustomGridActionsCellItem
@@ -27,6 +39,7 @@ describe('CustomGridActionsCellItem', () => {
       />
     );
     expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument();
+    expect(isExternalLink).not.toHaveBeenCalled();
   });
 
   it('renders action item with showInMenu=false', () => {
@@ -50,11 +63,16 @@ describe('CustomGridActionsCellItem', () => {
         showInMenu={false}
       />
     );
-    expect(screen.getByRole('button', { name: 'View' })).toBeInTheDocument();
+    const button = screen.getByRole('button', { name: 'View' });
+    expect(button).toBeInTheDocument();
+    expect(isExternalLink).toHaveBeenCalledWith('/product/1');
+    const props = gridActionsCellItemMock.mock.calls.at(-1)?.[0];
+    expect(props.href).toBe('/product/1');
+    expect(props.target).toBeUndefined();
   });
 
   it('renders external href in menu mode', () => {
-    render(
+    const { container } = render(
       <CustomGridActionsCellItem
         label="Docs"
         icon={<span />}
@@ -62,6 +80,12 @@ describe('CustomGridActionsCellItem', () => {
         showInMenu
       />
     );
-    expect(screen.getByRole('button', { name: 'Docs' })).toBeInTheDocument();
+    const button = screen.getByRole('button', { name: 'Docs' });
+    expect(button).toBeInTheDocument();
+    expect(isExternalLink).toHaveBeenCalledWith('https://example.com');
+    const props = gridActionsCellItemMock.mock.calls.at(-1)?.[0];
+    expect(props.target).toBe('_blank');
+    expect(props.rel).toBe('noopener noreferrer');
+    expect(container.querySelector('li.MuiMenuItem-root')).toContainElement(button);
   });
 });
