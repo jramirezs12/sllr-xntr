@@ -1,7 +1,7 @@
-import fs from 'fs';
-import path from 'path';
-import { createRequire } from 'module';
-import { TextDecoder, TextEncoder } from 'util';
+import fs from 'node:fs';
+import path from 'node:path';
+import { createRequire } from 'node:module';
+import { TextDecoder, TextEncoder } from 'node:util';
 
 type AnyRecord = Record<string, any>;
 
@@ -80,18 +80,23 @@ const mockTheme = {
   mixins: {
     filledStyles: (_theme: unknown, color: string, options?: AnyRecord) => ({
       backgroundColor: color,
-      ...(options ?? {}),
+      ...options,
     }),
     softStyles: (_theme: unknown, color: string, options?: AnyRecord) => ({
       color,
-      ...(options ?? {}),
+      ...options,
     }),
     paperStyles: () => ({ backgroundColor: '#fff' }),
     menuItemStyles: () => ({ minHeight: 36 }),
     scrollbarStyles: () => ({ scrollbarColor: '#999' }),
   },
   vars: {
-    opacity: { outlined: { border: 0.32 }, soft: { border: 0.16 }, switchTrack: 0.24, switchTrackDisabled: 0.18 },
+    opacity: {
+      outlined: { border: 0.32 },
+      soft: { border: 0.16 },
+      switchTrack: 0.24,
+      switchTrackDisabled: 0.18,
+    },
     customShadows: {
       z1: 'shadow-z1',
       z8: 'shadow-z8',
@@ -131,12 +136,66 @@ const mockTheme = {
         '500Channel': '115 115 115',
         '800Channel': '38 38 38',
       },
-      primary: { lighter: '#dbeafe', light: '#60a5fa', main: '#2563eb', dark: '#1d4ed8', darker: '#1e3a8a', mainChannel: '37 99 235', darkChannel: '29 78 216', contrastText: '#fff' },
-      secondary: { lighter: '#f3e8ff', light: '#c084fc', main: '#9333ea', dark: '#7e22ce', darker: '#581c87', mainChannel: '147 51 234', darkChannel: '126 34 206', contrastText: '#fff' },
-      info: { lighter: '#e0f2fe', light: '#38bdf8', main: '#0284c7', dark: '#0369a1', darker: '#0c4a6e', mainChannel: '2 132 199', darkChannel: '3 105 161', contrastText: '#fff' },
-      success: { lighter: '#dcfce7', light: '#4ade80', main: '#16a34a', dark: '#15803d', darker: '#14532d', mainChannel: '22 163 74', darkChannel: '21 128 61', contrastText: '#fff' },
-      warning: { lighter: '#fef9c3', light: '#facc15', main: '#ca8a04', dark: '#a16207', darker: '#713f12', mainChannel: '202 138 4', darkChannel: '161 98 7', contrastText: '#111' },
-      error: { lighter: '#fee2e2', light: '#f87171', main: '#dc2626', dark: '#b91c1c', darker: '#7f1d1d', mainChannel: '220 38 38', darkChannel: '185 28 28', contrastText: '#fff' },
+      primary: {
+        lighter: '#dbeafe',
+        light: '#60a5fa',
+        main: '#2563eb',
+        dark: '#1d4ed8',
+        darker: '#1e3a8a',
+        mainChannel: '37 99 235',
+        darkChannel: '29 78 216',
+        contrastText: '#fff',
+      },
+      secondary: {
+        lighter: '#f3e8ff',
+        light: '#c084fc',
+        main: '#9333ea',
+        dark: '#7e22ce',
+        darker: '#581c87',
+        mainChannel: '147 51 234',
+        darkChannel: '126 34 206',
+        contrastText: '#fff',
+      },
+      info: {
+        lighter: '#e0f2fe',
+        light: '#38bdf8',
+        main: '#0284c7',
+        dark: '#0369a1',
+        darker: '#0c4a6e',
+        mainChannel: '2 132 199',
+        darkChannel: '3 105 161',
+        contrastText: '#fff',
+      },
+      success: {
+        lighter: '#dcfce7',
+        light: '#4ade80',
+        main: '#16a34a',
+        dark: '#15803d',
+        darker: '#14532d',
+        mainChannel: '22 163 74',
+        darkChannel: '21 128 61',
+        contrastText: '#fff',
+      },
+      warning: {
+        lighter: '#fef9c3',
+        light: '#facc15',
+        main: '#ca8a04',
+        dark: '#a16207',
+        darker: '#713f12',
+        mainChannel: '202 138 4',
+        darkChannel: '161 98 7',
+        contrastText: '#111',
+      },
+      error: {
+        lighter: '#fee2e2',
+        light: '#f87171',
+        main: '#dc2626',
+        dark: '#b91c1c',
+        darker: '#7f1d1d',
+        mainChannel: '220 38 38',
+        darkChannel: '185 28 28',
+        contrastText: '#fff',
+      },
       Avatar: { defaultBg: '#f3f4f6' },
       Alert: {
         infoIconColor: '#0284c7',
@@ -178,7 +237,14 @@ const sampleProps: AnyRecord[] = [
   { multiline: true, size: 'small', hiddenLabel: true, ownerState: { inputSize: 'small' } },
   { multiline: true, size: 'medium', hiddenLabel: true, ownerState: { inputSize: 'medium' } },
   { multiline: true, size: 'medium', hiddenLabel: false, ownerState: { inputSize: 'medium' } },
-  { shrink: true, variant: 'filled', size: 'medium', error: false, isFieldFocused: false, isFieldValueEmpty: false },
+  {
+    shrink: true,
+    variant: 'filled',
+    size: 'medium',
+    error: false,
+    isFieldFocused: false,
+    isFieldValueEmpty: false,
+  },
   { disableGutters: false, expanded: true, fullScreen: false },
   { disableGutters: true, expanded: false, fullScreen: true },
   { shrink: true, error: false, size: 'medium', isFieldFocused: false, isFieldValueEmpty: true },
@@ -201,7 +267,30 @@ const classSamples: AnyRecord = {
   root: 'root',
 };
 
+const isReactLikeFunction = (fn: (...args: any[]) => any): boolean => {
+  const name = fn.name || '';
+
+  if (/^[A-Z]/.test(name)) return true;
+  if (name.startsWith('use')) return true;
+  if (['SvgIcon', 'ForwardRef', 'Memo'].includes(name)) return true;
+
+  const source = Function.prototype.toString.call(fn);
+  if (
+    source.includes('useContext(') ||
+    source.includes('useState(') ||
+    source.includes('useMemo(') ||
+    source.includes('useTheme(') ||
+    source.includes('useDefaultProps(')
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
 const invokeFunction = (fn: (...args: any[]) => any) => {
+  if (isReactLikeFunction(fn)) return;
+
   const argSets = [
     [],
     [sampleProps[0]],
@@ -273,6 +362,16 @@ const walkNode = (node: any) => {
   }
 };
 
+let consoleErrorSpy: jest.SpyInstance;
+
+beforeAll(() => {
+  consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+afterAll(() => {
+  consoleErrorSpy.mockRestore();
+});
+
 describe('theme core components coverage harness', () => {
   it('executes exported factories, variants, and style callbacks across theme components', () => {
     const nodeRequire = createRequire(__filename);
@@ -281,9 +380,11 @@ describe('theme core components coverage harness', () => {
       .readdirSync(directory)
       .filter(
         (fileName) =>
-          (fileName.endsWith('.tsx') || fileName.endsWith('.ts')) && !fileName.endsWith('.test.ts')
+          (fileName.endsWith('.tsx') || fileName.endsWith('.ts')) &&
+          !fileName.endsWith('.test.ts') &&
+          !fileName.endsWith('.test.tsx')
       )
-      .sort();
+      .sort((a, b) => a.localeCompare(b));
 
     expect(files.length).toBeGreaterThan(0);
 

@@ -6,11 +6,10 @@ jest.mock('minimal-shared/utils', () => ({
   isExternalLink: jest.fn((href: string) => href.startsWith('http')),
 }));
 jest.mock('@mui/x-data-grid', () => ({
-  GridActionsCellItem: ({ label, showInMenu, ...props }: any) => (
-    <button {...props}>{label}</button>
-  ),
+  GridActionsCellItem: ({ label, ...props }: any) => <button {...props}>{label}</button>,
   menuItemClasses: { root: 'MuiMenuItem-root' },
 }));
+jest.mock('@mui/material/Link', () => 'a');
 
 import React from 'react';
 import { render, screen } from '@testing-library/react';
@@ -40,5 +39,29 @@ describe('CustomGridActionsCellItem', () => {
       />
     );
     expect(screen.getByText('Delete')).toBeInTheDocument();
+  });
+
+  it('renders internal href link props', () => {
+    render(
+      <CustomGridActionsCellItem
+        label="View"
+        icon={<span />}
+        href="/product/1"
+        showInMenu={false}
+      />
+    );
+    expect(screen.getByRole('button', { name: 'View' })).toBeInTheDocument();
+  });
+
+  it('renders external href in menu mode', () => {
+    render(
+      <CustomGridActionsCellItem
+        label="Docs"
+        icon={<span />}
+        href="https://example.com"
+        showInMenu
+      />
+    );
+    expect(screen.getByRole('button', { name: 'Docs' })).toBeInTheDocument();
   });
 });

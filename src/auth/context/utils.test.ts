@@ -5,8 +5,12 @@ jest.mock('src/routes/paths', () => ({
 describe('auth/context/utils', () => {
   beforeEach(() => {
     sessionStorage.clear();
-    jest.resetModules();
     jest.clearAllMocks();
+    jest.restoreAllMocks();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   describe('getSession', () => {
@@ -23,10 +27,13 @@ describe('auth/context/utils', () => {
 
     it('throws when sessionStorage.getItem fails', async () => {
       const { getSession } = await import('./utils');
-      jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+
+      const getItemSpy = jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
         throw new Error('boom');
       });
+
       expect(() => getSession()).toThrow('boom');
+      getItemSpy.mockRestore();
     });
   });
 
@@ -43,7 +50,6 @@ describe('auth/context/utils', () => {
       sessionStorage.setItem('expiration_time', '123');
       const { setSession } = await import('./utils');
 
-      // no assertion de href (jsdom readonly)
       await setSession(null).catch(() => {});
 
       expect(sessionStorage.getItem('access_token')).toBeNull();
@@ -52,10 +58,13 @@ describe('auth/context/utils', () => {
 
     it('throws on storage error branch', async () => {
       const { setSession } = await import('./utils');
-      jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+
+      const setItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
         throw new Error('set error');
       });
+
       await expect(setSession('x')).rejects.toThrow('set error');
+      setItemSpy.mockRestore();
     });
   });
 
@@ -89,10 +98,13 @@ describe('auth/context/utils', () => {
 
     it('throws on unexpected error branch', async () => {
       const { validateSession } = await import('./utils');
-      jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+
+      const getItemSpy = jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
         throw new Error('read error');
       });
+
       await expect(validateSession()).rejects.toThrow('read error');
+      getItemSpy.mockRestore();
     });
   });
 });
